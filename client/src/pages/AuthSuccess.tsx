@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import axios from "axios";
+import api from "@/lib/axios";
 
 export default function AuthSuccess() {
   const [searchParams] = useSearchParams();
@@ -12,7 +12,7 @@ export default function AuthSuccess() {
   useEffect(() => {
     if (token) {
       // Immediately fetch user data with the new token
-      axios.get("http://localhost:5000/api/auth/me", {
+      api.get("/auth/me", {
         headers: { Authorization: `Bearer ${token}` }
       }).then(res => {
         login(token, res.data);

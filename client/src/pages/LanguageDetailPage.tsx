@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DashboardNav } from "@/components/DashboardNav";
 import { Editor as MonacoEditor } from "@monaco-editor/react";
 import { Copy, Check, ChevronRight, Code2 } from "lucide-react";
-import axios from 'axios';
+import api from '@/lib/axios';
 import Editor from '@/components/Editor';
 
 interface SnippetStep {
@@ -50,7 +50,7 @@ const LanguageDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/snippets/languages/${langSlug}/snippets`);
+        const response = await api.get(`/snippets/languages/${langSlug}/snippets`);
         setData(response.data);
         
         // Auto-select first snippet if available

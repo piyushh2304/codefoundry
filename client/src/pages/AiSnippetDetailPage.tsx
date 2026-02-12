@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DashboardNav } from "@/components/DashboardNav";
 import { Sparkles, ArrowLeft, Code2, Calendar, Trash2 } from "lucide-react";
-import axios from 'axios';
+import api from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import Editor from '@/components/Editor';
 
@@ -35,7 +35,7 @@ const AiSnippetDetailPage = () => {
         
         setIsDeleting(true);
         try {
-            await axios.delete(`http://localhost:5000/api/snippets/${snippetId}`);
+            await api.delete(`/snippets/${snippetId}`);
             alert("Snippet deleted successfully");
             navigate('/dashboard');
         } catch (error) {
@@ -49,7 +49,7 @@ const AiSnippetDetailPage = () => {
     useEffect(() => {
         const fetchSnippet = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/snippets/${snippetId}`);
+                const response = await api.get(`/snippets/${snippetId}`);
                 setSnippet(response.data);
             } catch (error) {
                 console.error('Error fetching AI snippet:', error);

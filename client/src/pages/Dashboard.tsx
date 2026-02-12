@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { DashboardNav } from "@/components/DashboardNav";
-import axios from 'axios';
+import api from '@/lib/axios';
 import { useAuth } from '@/context/AuthContext';
 import { Sparkles, Code2, Clock, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/snippets/languages');
+        const response = await api.get('/snippets/languages');
         setLanguages(response.data);
       } catch (error) {
         console.error('Error fetching languages:', error);
@@ -41,7 +41,7 @@ const Dashboard = () => {
     const fetchUserSnippets = async () => {
         if (!user?.id) return;
         try {
-            const response = await axios.get(`http://localhost:5000/api/snippets/user-snippets?userId=${user.id}`);
+            const response = await api.get(`/snippets/user-snippets?userId=${user.id}`);
             setUserSnippets(response.data);
         } catch (error) {
             console.error('Error fetching user snippets:', error);

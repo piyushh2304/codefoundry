@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '@/lib/axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Eye, 
@@ -51,7 +51,7 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/snippets/languages');
+        const res = await api.get('/snippets/languages');
         setLanguages(res.data);
       } catch (err) {
         console.error('Error fetching languages:', err);
@@ -64,7 +64,7 @@ const AdminPage = () => {
     if (selectedLang) {
       const fetchCategories = async () => {
         try {
-          const res = await axios.get(`http://localhost:5000/api/snippets/categories?langId=${selectedLang}`);
+          const res = await api.get(`/snippets/categories?langId=${selectedLang}`);
           setCategories(res.data);
         } catch (err) {
           console.error('Error fetching categories:', err);
@@ -80,7 +80,7 @@ const AdminPage = () => {
     if (!newLangName) return;
     try {
         const slug = newLangName.toLowerCase().replace(/ /g, '-');
-        const res = await axios.post('http://localhost:5000/api/snippets/languages', { name: newLangName, slug });
+        const res = await api.post('/snippets/languages', { name: newLangName, slug });
         setLanguages(prev => [...prev, res.data]);
         setSelectedLang(res.data.id);
         setIsCreatingLang(false);
@@ -95,7 +95,7 @@ const AdminPage = () => {
     if (!newCatName || !selectedLang) return;
     try {
         const slug = newCatName.toLowerCase().replace(/ /g, '-');
-        const res = await axios.post('http://localhost:5000/api/snippets/categories', { 
+        const res = await api.post('/snippets/categories', { 
             name: newCatName, 
             slug, 
             languageId: selectedLang 
@@ -120,7 +120,7 @@ const AdminPage = () => {
     setError(null);
 
     try {
-      await axios.post('http://localhost:5000/api/snippets/snippets', {
+      await api.post('/snippets/snippets', {
         title,
         description: content,
         categoryId: selectedCat,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import api from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -306,7 +306,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", { email, password });
+      const res = await api.post("/auth/login", { email, password });
       login(res.data.token, res.data.user);
       navigate("/dashboard");
     } catch (err: any) {
@@ -317,7 +317,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = `${api.defaults.baseURL}/auth/google`;
   };
 
 
