@@ -39,16 +39,25 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is healthy' });
 });
 
-// Serve frontend in production
+import fs from 'fs';
+
+// Serve frontend in production (only if files exist)
 if (process.env.NODE_ENV === 'production') {
   const clientDistPath = path.join(__dirname, '../../client/dist');
-  app.use(express.static(clientDistPath));
 
-  app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
-      res.sendFile(path.join(clientDistPath, 'index.html'));
-    }
-  });
+  if (fs.existsSync(clientDistPath)) {
+    app.use(express.static(clientDistPath));
+    app.get('*', (req, res) => {
+      if (!req.path.startsWith('/api')) {
+        res.sendFile(path.join(clientDistPath, 'index.html'));
+      }
+    });
+  } else {
+    console.log('Production mode: No frontend build found. Operating as API-only server.');
+    app.get('/', (req, res) => {
+      res.json({ message: "CodeFoundry API is running. Point your frontend to this URL." });
+    });
+  }
 }
 
 // Error global handler
