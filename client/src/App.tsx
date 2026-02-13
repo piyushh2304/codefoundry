@@ -11,6 +11,7 @@ import LanguageDetailPage from "@/pages/LanguageDetailPage";
 import AdminPage from "@/pages/AdminPage";
 import AskAI from "@/pages/AskAI";
 import AiSnippetDetailPage from "@/pages/AiSnippetDetailPage";
+import FeaturesPage from "@/pages/FeaturesPage";
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/ask-ai" element={<AskAI />} />
               <Route path="/ai-snippets/:snippetId" element={<AiSnippetDetailPage />} />
+              <Route path="/features" element={<FeaturesPage />} />
             </Routes>
        
         </BrowserRouter>

@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const items = [
   { title: "Pricing", href: "#pricing" },
-  { title: "Features", href: "#features" },
+  { title: "Features", href: "/features" },
   { title: "FAQ", href: "#faq" },
 ];
 

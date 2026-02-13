@@ -479,12 +479,13 @@ export default function LandingPage() {
                     <h4 className="font-bold text-2xl text-white tracking-tight">CodeFoundry</h4>
                  </div>
                  <p className="text-neutral-500 mb-8 max-w-sm mx-auto font-medium">Built to help you ship your dream project faster than ever before.</p>
-                 <div className="flex justify-center gap-8 text-sm font-bold text-neutral-400">
+                  <div className="flex justify-center gap-8 text-sm font-bold text-neutral-400">
+                     <Link to="/features" className="hover:text-white transition-colors">Features</Link>
                      <Link to="#" className="hover:text-white transition-colors">Terms of Service</Link>
                      <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>
                      <Link to="#" className="hover:text-white transition-colors">Twitter</Link>
                      <Link to="#" className="text-yellow-500/80 hover:text-yellow-500 transition-colors">Affiliates</Link>
-                 </div>
+                  </div>
                  <div className="mt-12 text-xs text-neutral-700 font-mono">
                      © 2024 CodeFoundry Inc. All rights reserved.
                  </div>
