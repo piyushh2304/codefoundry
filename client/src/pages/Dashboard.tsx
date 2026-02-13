@@ -27,7 +27,12 @@ const Dashboard = () => {
     const fetchLanguages = async () => {
       try {
         const response = await api.get('/snippets/languages');
-        setLanguages(response.data);
+        if (Array.isArray(response.data)) {
+          setLanguages(response.data);
+        } else {
+          console.error('Expected array for languages, got:', response.data);
+          setLanguages([]);
+        }
       } catch (error) {
         console.error('Error fetching languages:', error);
       } finally {
@@ -42,7 +47,12 @@ const Dashboard = () => {
         if (!user?.id) return;
         try {
             const response = await api.get(`/snippets/user-snippets?userId=${user.id}`);
-            setUserSnippets(response.data);
+            if (Array.isArray(response.data)) {
+              setUserSnippets(response.data);
+            } else {
+              console.error('Expected array for user snippets, got:', response.data);
+              setUserSnippets([]);
+            }
         } catch (error) {
             console.error('Error fetching user snippets:', error);
         } finally {
@@ -87,7 +97,7 @@ const Dashboard = () => {
                         </div>
                     ) : userSnippets.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {userSnippets.slice(0, 3).map((snippet, index) => (
+                            {Array.isArray(userSnippets) && userSnippets.slice(0, 3).map((snippet, index) => (
                                 <motion.div
                                     key={snippet.id}
                                     initial={{ opacity: 0, x: -20 }}
@@ -161,7 +171,7 @@ const Dashboard = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {languages.map((lang, index) => (
+                    {Array.isArray(languages) && languages.map((lang, index) => (
                         <motion.div
                             key={lang.id}
                             initial={{ opacity: 0, y: 20 }}
