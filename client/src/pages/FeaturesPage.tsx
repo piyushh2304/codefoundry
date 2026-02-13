@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { 
   Sparkles, 
@@ -105,25 +105,33 @@ const FAQItem = ({ item, index }: { item: typeof faqItems[0], index: number }) =
       className="border-b border-white/5"
     >
       <button 
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-8 flex items-center justify-between text-left group"
+        className="w-full py-8 flex items-center justify-between text-left group focus:outline-none"
       >
-        <span className="text-xl md:text-2xl font-bold text-white group-hover:text-primary transition-colors">
+        <span className="text-xl md:text-2xl font-bold text-white group-hover:text-primary transition-colors pr-8">
           {item.q}
         </span>
-        <div className={`p-2 rounded-full border border-white/10 transition-all ${isOpen ? 'bg-primary/10 border-primary/20 text-primary rotate-180' : 'text-slate-500'}`}>
+        <div className={`shrink-0 p-2 rounded-full border border-white/10 transition-all duration-300 ${isOpen ? 'bg-primary/10 border-primary/20 text-primary rotate-180' : 'text-slate-500'}`}>
           {isOpen ? <Minus size={20} /> : <Plus size={20} />}
         </div>
       </button>
-      <motion.div
-        initial={false}
-        animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-        className="overflow-hidden"
-      >
-        <p className="pb-8 text-lg text-slate-400 leading-relaxed max-w-3xl font-medium">
-          {item.a}
-        </p>
-      </motion.div>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <p className="pb-8 text-lg text-slate-400 leading-relaxed max-w-3xl font-medium">
+              {item.a}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
