@@ -35,6 +35,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/snippets', snippetRoutes);
 app.use('/api/ai', aiRoutes);
 
+// API 404 handler
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ message: `API route not found: ${req.originalUrl}` });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is healthy' });
 });

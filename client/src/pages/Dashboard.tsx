@@ -27,10 +27,10 @@ const Dashboard = () => {
     const fetchLanguages = async () => {
       try {
         const response = await api.get('/snippets/languages');
-        if (Array.isArray(response.data)) {
+        if (response.data && Array.isArray(response.data)) {
           setLanguages(response.data);
         } else {
-          console.error('Expected array for languages, got:', response.data);
+          console.error('Expected array for languages, but received:', typeof response.data === 'string' && response.data.includes('<!doctype html>') ? 'HTML Document (likely a routing error)' : response.data);
           setLanguages([]);
         }
       } catch (error) {
@@ -47,10 +47,10 @@ const Dashboard = () => {
         if (!user?.id) return;
         try {
             const response = await api.get(`/snippets/user-snippets?userId=${user.id}`);
-            if (Array.isArray(response.data)) {
+            if (response.data && Array.isArray(response.data)) {
               setUserSnippets(response.data);
             } else {
-              console.error('Expected array for user snippets, got:', response.data);
+              console.error('Expected array for user snippets, but received:', typeof response.data === 'string' && response.data.includes('<!doctype html>') ? 'HTML Document' : response.data);
               setUserSnippets([]);
             }
         } catch (error) {

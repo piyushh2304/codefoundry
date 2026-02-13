@@ -51,14 +51,19 @@ const LanguageDetailPage = () => {
     const fetchData = async () => {
       try {
         const response = await api.get(`/snippets/languages/${langSlug}/snippets`);
-        setData(response.data);
-        
-        // Auto-select first snippet if available
-        if (response.data && Array.isArray(response.data.categories) && response.data.categories.length > 0) {
-          if (response.data.categories[0].snippets && response.data.categories[0].snippets.length > 0) {
-            setSelectedCategoryId(response.data.categories[0].id);
-            setSelectedSnippet(response.data.categories[0].snippets[0]);
+        if (response.data && typeof response.data === 'object' && !Array.isArray(response.data)) {
+          setData(response.data);
+          
+          // Auto-select first snippet if available
+          if (Array.isArray(response.data.categories) && response.data.categories.length > 0) {
+            if (response.data.categories[0].snippets && response.data.categories[0].snippets.length > 0) {
+              setSelectedCategoryId(response.data.categories[0].id);
+              setSelectedSnippet(response.data.categories[0].snippets[0]);
+            }
           }
+        } else {
+          console.error('Expected object for language data, but received:', typeof response.data === 'string' && response.data.includes('<!doctype html>') ? 'HTML Document (likely a routing error)' : response.data);
+          setData(null);
         }
       } catch (error) {
         console.error('Error fetching language data:', error);
