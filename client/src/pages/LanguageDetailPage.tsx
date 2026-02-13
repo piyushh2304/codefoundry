@@ -54,9 +54,11 @@ const LanguageDetailPage = () => {
         setData(response.data);
         
         // Auto-select first snippet if available
-        if (response.data.categories.length > 0 && response.data.categories[0].snippets.length > 0) {
-          setSelectedCategoryId(response.data.categories[0].id);
-          setSelectedSnippet(response.data.categories[0].snippets[0]);
+        if (response.data && Array.isArray(response.data.categories) && response.data.categories.length > 0) {
+          if (response.data.categories[0].snippets && response.data.categories[0].snippets.length > 0) {
+            setSelectedCategoryId(response.data.categories[0].id);
+            setSelectedSnippet(response.data.categories[0].snippets[0]);
+          }
         }
       } catch (error) {
         console.error('Error fetching language data:', error);
