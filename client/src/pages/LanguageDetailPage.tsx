@@ -203,86 +203,145 @@ const LanguageDetailPage = () => {
                   )}
                 </div>
 
-                {/* Legacy Steps Section (Keep for backward compatibility) */}
-                {selectedSnippet.steps && selectedSnippet.steps.length > 0 && (
-                  <div className="space-y-20">
-                    {selectedSnippet.steps.map((step) => (
-                      <div key={step.id} className="space-y-6">
-                        <div className="flex flex-col gap-2">
-                           {step.title && (
-                             <h2 className="text-2xl font-bold text-white tracking-tight border-b border-slate-800/50 pb-2">
-                               {step.title}
-                             </h2>
-                           )}
-                           {step.description && (
-                             <div className="text-slate-400 -ml-4">
-                               <Editor 
-                                 readOnly={true} 
-                                 initialContent={step.description} 
-                                 onChange={() => {}} 
-                               />
-                             </div>
-                           )}
-                        </div>
-
-                        {step.code && (
-                           <div className="relative group rounded-xl overflow-hidden border border-slate-800/60 bg-[#0d0d0d] shadow-2xl transition-all hover:border-slate-700/60">
-                             <div className="bg-[#111111] px-5 py-3 border-b border-slate-800/50 flex items-center justify-between">
-                               <div className="flex items-center gap-3">
-                                 <div className="flex gap-1.5">
-                                   <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/40" />
-                                   <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40" />
-                                   <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/40" />
-                                 </div>
-                                 <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 ml-2">
-                                   {step.title?.split('(')[1]?.replace(')', '') || 'Snippet'}
-                                 </span>
+                {/* Content Section */}
+                <div className="space-y-16">
+                  {/* Option 1: Render Steps if they exist */}
+                  {selectedSnippet.steps && selectedSnippet.steps.length > 0 ? (
+                    <div className="space-y-20">
+                      {selectedSnippet.steps.map((step) => (
+                        <div key={step.id} className="space-y-6">
+                          <div className="flex flex-col gap-2">
+                             {step.title && (
+                               <h2 className="text-2xl font-bold text-white tracking-tight border-b border-slate-800/50 pb-2">
+                                 {step.title}
+                               </h2>
+                             )}
+                             {step.description && (
+                               <div className="text-slate-400 -ml-4">
+                                 <Editor 
+                                   readOnly={true} 
+                                   initialContent={step.description} 
+                                   onChange={() => {}} 
+                                 />
                                </div>
-                               <button 
-                                 onClick={() => handleCopy(step.code, step.id)}
-                                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 text-[11px] font-bold text-slate-400 hover:text-white transition-all border border-slate-700/30"
-                               >
-                                 {copiedStates[step.id] ? (
-                                   <>
-                                     <Check size={14} className="text-emerald-500" />
-                                     <span className="text-emerald-500 uppercase tracking-wider">Copied</span>
-                                   </>
-                                 ) : (
-                                   <>
-                                     <Copy size={14} />
-                                     <span className="uppercase tracking-wider">Copy</span>
-                                   </>
-                                 )}
-                               </button>
+                             )}
+                          </div>
+
+                          {step.code && (
+                             <div className="relative group rounded-xl overflow-hidden border border-slate-800/60 bg-[#0d0d0d] shadow-2xl transition-all hover:border-slate-700/60">
+                               <div className="bg-[#111111] px-5 py-3 border-b border-slate-800/50 flex items-center justify-between">
+                                 <div className="flex items-center gap-3">
+                                   <div className="flex gap-1.5">
+                                     <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/40" />
+                                     <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40" />
+                                     <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/40" />
+                                   </div>
+                                   <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 ml-2">
+                                     {step.title?.split('(')[1]?.replace(')', '') || 'Snippet'}
+                                   </span>
+                                 </div>
+                                 <button 
+                                   onClick={() => handleCopy(step.code, step.id)}
+                                   className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 text-[11px] font-bold text-slate-400 hover:text-white transition-all border border-slate-700/30"
+                                 >
+                                   {copiedStates[step.id] ? (
+                                     <>
+                                       <Check size={14} className="text-emerald-500" />
+                                       <span className="text-emerald-500 uppercase tracking-wider">Copied</span>
+                                     </>
+                                   ) : (
+                                     <>
+                                       <Copy size={14} />
+                                       <span className="uppercase tracking-wider">Copy</span>
+                                     </>
+                                   )}
+                                 </button>
+                               </div>
+                               <div className="p-2">
+                                 <MonacoEditor
+                                   height={Math.min(800, Math.max(100, (step.code?.split('\n').length || 1) * 24 + 40)) + "px"}
+                                   defaultLanguage={data.slug === 'mern' ? 'javascript' : data.slug}
+                                   value={step.code || ''}
+                                   theme="vs-dark"
+                                   options={{
+                                     readOnly: true,
+                                     minimap: { enabled: false },
+                                     scrollBeyondLastLine: false,
+                                     fontSize: 13,
+                                     fontFamily: "'JetBrains Mono', monospace",
+                                     padding: { top: 20, bottom: 20 },
+                                     lineNumbers: 'on',
+                                     renderLineHighlight: 'none',
+                                     scrollbar: { vertical: 'hidden', horizontal: 'hidden' },
+                                     automaticLayout: true,
+                                     lineHeight: 1.6,
+                                     backgroundColor: '#0d0d0d',
+                                   }}
+                                 />
+                               </div>
                              </div>
-                             <div className="p-2">
-                               <MonacoEditor
-                                 height={Math.min(800, Math.max(100, step.code.split('\n').length * 24 + 40)) + "px"}
-                                 defaultLanguage={data.slug}
-                                 value={step.code}
-                                 theme="vs-dark"
-                                 options={{
-                                   readOnly: true,
-                                   minimap: { enabled: false },
-                                   scrollBeyondLastLine: false,
-                                   fontSize: 13,
-                                   fontFamily: "'JetBrains Mono', monospace",
-                                   padding: { top: 20, bottom: 20 },
-                                   lineNumbers: 'on',
-                                   renderLineHighlight: 'none',
-                                   scrollbar: { vertical: 'hidden', horizontal: 'hidden' },
-                                   automaticLayout: true,
-                                   lineHeight: 1.6,
-                                   backgroundColor: '#0d0d0d',
-                                 }}
-                               />
-                             </div>
-                           </div>
-                        )}
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    /* Option 2: Render top-level code if NO steps exist */
+                    selectedSnippet.code && (
+                      <div className="space-y-6">
+                        <div className="relative group rounded-xl overflow-hidden border border-slate-800/60 bg-[#0d0d0d] shadow-2xl transition-all hover:border-slate-700/60">
+                          <div className="bg-[#111111] px-5 py-3 border-b border-slate-800/50 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="flex gap-1.5">
+                                <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/40" />
+                                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40" />
+                                <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/40" />
+                              </div>
+                              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 ml-2">Source Code</span>
+                            </div>
+                            <button 
+                              onClick={() => handleCopy(selectedSnippet.code, selectedSnippet.id)}
+                              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 text-[11px] font-bold text-slate-400 hover:text-white transition-all border border-slate-700/30"
+                            >
+                              {copiedStates[selectedSnippet.id] ? (
+                                <>
+                                  <Check size={14} className="text-emerald-500" />
+                                  <span className="text-emerald-500 uppercase tracking-wider">Copied</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy size={14} />
+                                  <span className="uppercase tracking-wider">Copy</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                          <div className="p-2">
+                            <MonacoEditor
+                              height={Math.min(800, Math.max(100, (selectedSnippet.code?.split('\n').length || 1) * 24 + 40)) + "px"}
+                              defaultLanguage={data.slug === 'mern' ? 'javascript' : data.slug}
+                              value={selectedSnippet.code || ''}
+                              theme="vs-dark"
+                              options={{
+                                readOnly: true,
+                                minimap: { enabled: false },
+                                scrollBeyondLastLine: false,
+                                fontSize: 13,
+                                fontFamily: "'JetBrains Mono', monospace",
+                                padding: { top: 20, bottom: 20 },
+                                lineNumbers: 'on',
+                                renderLineHighlight: 'none',
+                                scrollbar: { vertical: 'hidden', horizontal: 'hidden' },
+                                automaticLayout: true,
+                                lineHeight: 1.6,
+                                backgroundColor: '#0d0d0d',
+                              }}
+                            />
+                          </div>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                )}
+                    )
+                  )}
+                </div>
 
                 <div className="mt-24 p-8 rounded-2xl border border-slate-800/50 bg-slate-900/20 flex items-start gap-5">
                     <div className="p-2.5 rounded-xl bg-primary/10 text-primary shrink-0">

@@ -7,6 +7,18 @@ import { mergeAttributes } from "@tiptap/core";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { BubbleMenu as BubbleMenuExtension } from "@tiptap/extension-bubble-menu";
 import { ReactNodeViewRenderer } from "@tiptap/react";
+import Link from "@tiptap/extension-link";
+import Underline from "@tiptap/extension-underline";
+import { TextStyle } from "@tiptap/extension-text-style";
+import { Color } from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
+import { Table } from "@tiptap/extension-table";
+import TableRow from "@tiptap/extension-table-row";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
+import Image from "@tiptap/extension-image";
 import CodeBlock from "./CodeBlock";
 
 const lowlight = createLowlight(common);
@@ -72,6 +84,38 @@ export const defaultExtensions = [
             return "Start writing or paste code...";
         },
         includeChildren: true,
+    }),
+    Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+            class: "text-primary underline underline-offset-4 hover:text-primary/80 transition-colors cursor-pointer",
+        },
+    }),
+    Underline,
+    TextStyle,
+    Color,
+    Highlight.configure({ multicolor: true }),
+    TaskList.configure({
+        HTMLAttributes: {
+            class: "not-prose pl-2",
+        },
+    }),
+    TaskItem.configure({
+        HTMLAttributes: {
+            class: "flex items-start my-4",
+        },
+        nested: true,
+    }),
+    Table.configure({
+        resizable: true,
+    }),
+    TableRow,
+    TableHeader,
+    TableCell,
+    Image.configure({
+        HTMLAttributes: {
+            class: "rounded-lg border border-slate-800",
+        },
     }),
     BubbleMenuExtension,
 ];

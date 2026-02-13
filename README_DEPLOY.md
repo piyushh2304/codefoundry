@@ -32,7 +32,7 @@ This guide provides the exact steps to deploy your MERN stack application with t
 4. **Build Command**: `npm run build`
 5. **Output Directory**: `dist`
 6. **Environment Variables**:
-   - `VITE_API_URL`: The URL of your Render backend (e.g., `https://your-api.onrender.com/api`).
+   - `VITE_API_URL`: `https://codefoundry.onrender.com/api`
 7. **SPAs Support**: Vercel handles this automatically for Vite projects, but ensure you have a `vercel.json` in the `client` root if you face 404s on refresh:
    ```json
    {
