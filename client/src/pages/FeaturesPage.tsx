@@ -12,7 +12,9 @@ import {
   Layout, 
   CheckCircle2,
   ChevronRight,
-  Github
+  Github,
+  Plus,
+  Minus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -67,6 +69,64 @@ const features = [
     delay: 0.6
   }
 ];
+
+const faqItems = [
+  {
+    q: "How does the AI snippet generation work?",
+    a: "Our AI uses Gemini 2.0 with Retrieval-Augmented Generation (RAG). It doesn't just hallucinate code; it analyzes your intent and checks against a library of enterprise patterns to provide production-ready solutions."
+  },
+  {
+    q: "Is my code secure and private?",
+    a: "Absolutely. Snippets are stored in your private library. We don't use your custom snippets to train global models, and you have full control over visibility through your personal dashboard."
+  },
+  {
+    q: "Which frameworks and languages are supported?",
+    a: "Currently, we have optimized hubs for JavaScript, TypeScript, Python, and the MERN stack. However, our AI generator can create and document snippets for any modern language or framework upon request."
+  },
+  {
+    q: "Can I use CodeFoundry for team collaboration?",
+    a: "The current version is optimized for individual power-users. However, a 'Foundry for Teams' feature is in the roadmap, which will include shared libraries and collaborative organization."
+  },
+  {
+    q: "Is there a limit to how many snippets I can generate?",
+    a: "There are no hard limits for our premium members. We use standard rate-limiting to ensure stability, but you're free to build as massive a library as your projects require."
+  }
+];
+
+const FAQItem = ({ item, index }: { item: typeof faqItems[0], index: number }) => {
+  const [isOpen, setIsOpen] = React.useState(index === 0);
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
+      className="border-b border-white/5"
+    >
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full py-8 flex items-center justify-between text-left group"
+      >
+        <span className="text-xl md:text-2xl font-bold text-white group-hover:text-primary transition-colors">
+          {item.q}
+        </span>
+        <div className={`p-2 rounded-full border border-white/10 transition-all ${isOpen ? 'bg-primary/10 border-primary/20 text-primary rotate-180' : 'text-slate-500'}`}>
+          {isOpen ? <Minus size={20} /> : <Plus size={20} />}
+        </div>
+      </button>
+      <motion.div
+        initial={false}
+        animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
+        className="overflow-hidden"
+      >
+        <p className="pb-8 text-lg text-slate-400 leading-relaxed max-w-3xl font-medium">
+          {item.a}
+        </p>
+      </motion.div>
+    </motion.div>
+  );
+};
 
 const FeaturesPage = () => {
   return (
@@ -277,6 +337,33 @@ const FeaturesPage = () => {
               <a href="https://github.com/piyushh2304/codefoundry" target="_blank" rel="noreferrer" className="flex items-center gap-3 text-white font-bold hover:text-primary transition-colors">
                 <Github size={24} /> Star on GitHub
               </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row gap-20">
+            <div className="md:w-1/3">
+              <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-[0.2em] uppercase bg-primary/10 text-primary border border-primary/20 rounded-full">
+                Help Center
+              </span>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
+                Frequently Asked <br />
+                <span className="text-primary italic">Questions</span>
+              </h2>
+              <p className="text-lg text-slate-400 font-medium">
+                Can't find what you're looking for? Reach out to our 
+                <a href="#" className="text-primary hover:underline ml-1">support team</a>.
+              </p>
+            </div>
+            
+            <div className="md:w-2/3 border-t border-white/5">
+              {faqItems.map((item, idx) => (
+                <FAQItem key={idx} item={item} index={idx} />
+              ))}
             </div>
           </div>
         </div>
