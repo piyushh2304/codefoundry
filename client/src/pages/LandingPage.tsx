@@ -75,14 +75,7 @@ export default function LandingPage() {
               variants={staggerContainer}
               className="flex flex-col items-start text-left gap-6 order-2 lg:order-1"
             >
-                {/* Product Badge */}
-                <motion.div variants={fadeInUp}>
-                    <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-yellow-500/20 bg-yellow-500/5 text-yellow-500 text-xs font-bold uppercase tracking-wider mb-2 hover:bg-yellow-500/10 transition-colors cursor-pointer group">
-                        <span className="text-yellow-500 group-hover:scale-110 transition-transform">🏆</span> 
-                        Product of the day 
-                        <span className="text-white ml-1 opacity-80 backdrop-blur-sm bg-white/10 px-1.5 rounded-sm">2nd</span>
-                    </div>
-                </motion.div>
+
 
                 {/* Headline */}
                 <motion.h1 
