@@ -1,12 +1,12 @@
-
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DashboardNav } from "@/components/DashboardNav";
 import { Editor as MonacoEditor } from "@monaco-editor/react";
-import { Copy, Check, ChevronRight, Code2 } from "lucide-react";
+import { Copy, Check, ChevronRight, Code2, Palette } from "lucide-react";
 import api from '@/lib/axios';
 import Editor from '@/components/Editor';
+import { defineThemes, monacoThemes } from '@/lib/monaco-themes';
 
 interface SnippetStep {
   id: string;
@@ -46,6 +46,9 @@ const LanguageDetailPage = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [copiedStates, setCopiedStates] = useState<Record<string, boolean>>({});
+  const [editorTheme, setEditorTheme] = useState<string>('vs-dark');
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -188,7 +191,24 @@ const LanguageDetailPage = () => {
                     <span className="text-primary/80">{data.categories.find(c => c.id === selectedCategoryId)?.name}</span>
                 </div>
 
-                <div className="mb-14">
+                 <div className="mb-14 relative group/header">
+                  {/* Theme Switcher */}
+                  <div className="absolute top-0 right-0 flex items-center gap-2 opacity-0 group-hover/header:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-2 bg-[#111] border border-slate-800 rounded-lg px-3 py-1.5 shadow-xl">
+                      <Palette size={14} className="text-primary" />
+                      <select 
+                        value={editorTheme}
+                        onChange={(e) => setEditorTheme(e.target.value)}
+                        className="bg-transparent text-[11px] font-bold text-slate-400 focus:outline-none cursor-pointer uppercase tracking-wider"
+                      >
+                        <option value="vs-dark">Standard Dark</option>
+                        {Object.entries(monacoThemes).map(([value, label]) => (
+                          <option key={value} value={value} className="bg-[#0f0f0f]">{label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
                   <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-6">
                     {selectedSnippet.title}
                   </h1>
@@ -262,7 +282,8 @@ const LanguageDetailPage = () => {
                                    height={Math.min(800, Math.max(100, (step.code?.split('\n').length || 1) * 24 + 40)) + "px"}
                                    defaultLanguage={data.slug === 'mern' ? 'javascript' : data.slug}
                                    value={step.code || ''}
-                                   theme="vs-dark"
+                                   theme={editorTheme}
+                                   beforeMount={defineThemes}
                                    options={{
                                      readOnly: true,
                                      minimap: { enabled: false },
@@ -320,7 +341,8 @@ const LanguageDetailPage = () => {
                               height={Math.min(800, Math.max(100, (selectedSnippet.code?.split('\n').length || 1) * 24 + 40)) + "px"}
                               defaultLanguage={data.slug === 'mern' ? 'javascript' : data.slug}
                               value={selectedSnippet.code || ''}
-                              theme="vs-dark"
+                              theme={editorTheme}
+                              beforeMount={defineThemes}
                               options={{
                                 readOnly: true,
                                 minimap: { enabled: false },
