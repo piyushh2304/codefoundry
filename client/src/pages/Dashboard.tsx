@@ -170,36 +170,74 @@ const Dashboard = () => {
                     ))}
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {Array.isArray(languages) && languages.map((lang, index) => (
                         <motion.div
                             key={lang.id}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            whileHover={{ scale: 1.02, translateY: -5 }}
+                            transition={{ 
+                                delay: index * 0.08,
+                                type: "spring",
+                                damping: 20,
+                                stiffness: 100
+                            }}
+                            whileHover={{ 
+                                scale: 1.02, 
+                                translateY: -8,
+                            }}
                             onClick={() => navigate(`/snippets/${lang.slug}`)}
-                            className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/5 bg-gradient-to-b from-white/5 to-white/[0.02] p-8 transition-all hover:bg-white/10 hover:shadow-2xl hover:shadow-primary/5"
+                            className="group relative cursor-pointer min-h-[220px] rounded-[2rem] border border-white/5 bg-[#0a0a0c] p-1 transition-all hover:border-primary/30 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)]"
                         >
-                            <div className="flex flex-col h-full items-start justify-between">
-                                <div className="space-y-4">
-                                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                                      {/* Placeholder for icon if missing */}
-                                      <span className="text-xl font-bold">{lang.name.charAt(0)}</span>
-                                  </div>
-                                  <div>
-                                      <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">{lang.name}</h3>
-                                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                                          Explore advanced {lang.name} snippets, boilerplates, and common utility functions.
-                                      </p>
-                                  </div>
+                            {/* Inner Container */}
+                            <div className="relative h-full w-full rounded-[1.8rem] bg-gradient-to-br from-white/[0.03] to-transparent p-7 overflow-hidden">
+                                
+                                {/* Background Decorative Elements */}
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-indigo-500/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                
+                                <div className="relative flex flex-col h-full justify-between z-10">
+                                    <div className="space-y-5">
+                                        <div className="flex items-center justify-between">
+                                            <div className="h-14 w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary transition-all duration-500 group-hover:bg-primary group-hover:text-primary-foreground group-hover:rotate-[10deg] group-hover:scale-110 shadow-xl">
+                                                <span className="text-2xl font-black italic tracking-tighter">
+                                                    {lang.name.charAt(0)}
+                                                </span>
+                                            </div>
+                                            <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-slate-500 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                                {lang.slug === 'mern' ? 'Full Stack' : 'Language'}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-2xl font-bold text-white group-hover:text-primary transition-colors tracking-tight">
+                                                {lang.name}
+                                            </h3>
+                                            <p className="mt-2.5 text-[13px] text-slate-500 leading-relaxed font-medium line-clamp-3">
+                                                Master the art of {lang.name} with our curated collection of enterprise-grade boilerplates and advanced utilities.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-8 flex items-center justify-between">
+                                        <div className="flex items-center text-xs font-bold text-primary group-hover:gap-3 transition-all duration-300">
+                                            <span className="uppercase tracking-[0.2em] opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
+                                                Browse Gallery
+                                            </span>
+                                            <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center border border-white/5 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500 shadow-lg">
+                                                <ChevronRight size={16} />
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-1">
+                                            {[1, 2, 3].map(i => (
+                                                <div key={i} className="h-1 w-1 rounded-full bg-white/10 group-hover:bg-primary/40 transition-colors" />
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="mt-6 flex items-center text-sm font-medium text-primary opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-2">
-                                    Browse Snippets
-                                    <svg className="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </div>
+
+                                {/* Hover Shine Effect */}
+                                <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-20deg]" />
                             </div>
                         </motion.div>
                     ))}
