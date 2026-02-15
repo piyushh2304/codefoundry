@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { cn } from "@/lib/utils";
 import { Code2, Search, Sparkles } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 // Reuse Logo component logic but adapted for consistency
 const Logo = () => (
@@ -17,6 +18,8 @@ const Logo = () => (
 );
 
 export const DashboardNav = () => {
+  const { user, logout } = useAuth();
+  
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full">
       <div className="flex h-16 items-center px-4 md:px-8 max-w-7xl mx-auto justify-between gap-4">
@@ -65,6 +68,30 @@ export const DashboardNav = () => {
           </Link>
           
           <ModeToggle />
+
+          {user && (
+            <div className="flex items-center gap-2 ml-2 pl-2 border-l border-border/40">
+                <div className={cn(
+                    "px-2 py-0.5 rounded-full text-[10px] font-black tracking-widest uppercase border",
+                    user.plan === 'PRO' 
+                        ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" 
+                        : "bg-slate-500/10 text-slate-500 border-slate-500/20"
+                )}>
+                    {user.plan}
+                </div>
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => {
+                        logout();
+                        window.location.href = "/";
+                    }}
+                    className="text-muted-foreground hover:text-destructive transition-colors text-xs font-bold"
+                >
+                    Logout
+                </Button>
+            </div>
+          )}
         </div>
       </div>
     </nav>

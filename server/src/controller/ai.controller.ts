@@ -10,6 +10,22 @@ export const askAI = async (req: Request, res: Response) => {
     }
 
     try {
+        // --- 0. AI Usage & Pro Check ---
+        const user = await prisma.user.findUnique({
+            where: { id: (req as any).user?.id || userId }
+        });
+
+        if (!user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        // Allow only 3 usages for FREE users
+        if (user.plan === 'FREE' && (user as any).aiUsageCount >= 3) {
+            return res.status(403).json({
+                message: "You've reached your free AI limit. Please upgrade to Pro for unlimited access.",
+                code: "PRO_REQUIRED"
+            });
+        }
         // --- 0. Special Handling: Repository Ingestion (Phase 4 Simulation) ---
         if (prompt.includes('github.com') || prompt.includes('.zip')) {
             return res.json({
@@ -137,6 +153,14 @@ export const askAI = async (req: Request, res: Response) => {
             await (prisma as any).chatMessage.createMany({
                 data: [{ content: prompt, role: 'user', userId }, { content: aiData.explanation, role: 'assistant', userId }]
             }).catch(() => { });
+
+            // Increment usage count for FREE users
+            if (user.plan === 'FREE') {
+                await prisma.user.update({
+                    where: { id: userId },
+                    data: { aiUsageCount: { increment: 1 } }
+                }).catch(() => { });
+            }
         }
 
         res.json({

@@ -16,8 +16,11 @@ model User {
   name         String?
   picture      String?
   role         String   @default("user")
+  plan         String   @default("FREE") // "FREE" or "PRO"
+  aiUsageCount Int      @default(0)
   provider     String   @default("local") // "local" or "google"
   googleId     String?  @unique
+  razorpayOrderId String? @unique // To track the last order
   snippets     Snippet[]
   chatMessages ChatMessage[]
   createdAt    DateTime @default(now())

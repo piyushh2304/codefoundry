@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes.js';
 import snippetRoutes from './routes/snippet.routes.js';
 import aiRoutes from './routes/ai.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
 import passport from './config/passport.js';
 
 import path from 'path';
@@ -34,6 +35,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/snippets', snippetRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // API 404 handler
 app.use('/api/*', (req, res) => {

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Check, Star, Database, Lock, LayoutTemplate, Github, Triangle } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
+import { UpgradeButton } from "@/components/UpgradeButton";
 
 // --- Avatars for Social Proof ---
 const Avatars = () => (
@@ -350,13 +351,13 @@ export default function LandingPage() {
         </section>
 
         {/* --- PRICING SECTION --- */}
-        <section className="w-full max-w-7xl mx-auto px-6 md:px-12 py-24" id="pricing">
+         <section className="w-full max-w-7xl mx-auto px-6 md:px-12 py-24 flex flex-col items-center justify-center" id="pricing">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="max-w-4xl mx-auto rounded-[2.5rem] bg-[#0A0A0A] border border-white/10 overflow-hidden relative group"
+              className="w-full max-w-4xl rounded-[2.5rem] bg-[#0A0A0A] border border-white/10 overflow-hidden relative group"
             >
                  {/* Background Grid Pattern */}
                  <div className="absolute inset-0 opacity-20" 
@@ -364,39 +365,40 @@ export default function LandingPage() {
                  />
                  
                  <div className="relative p-8 md:p-16 text-center space-y-10">
-                     <Badge className="bg-green-500/10 text-green-400 px-4 py-1.5 uppercase tracking-wider text-xs border border-green-500/20 font-bold">
-                         Launch Offer
+                     <Badge className="bg-yellow-500/10 text-yellow-500 px-4 py-1.5 uppercase tracking-wider text-xs border border-yellow-500/20 font-bold">
+                         Pro Plan
                      </Badge>
                      
                      <div className="space-y-4">
-                         <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white">Pay once, own it forever</h2>
-                         <p className="text-xl text-neutral-400">Get lifetime access to the code and all future updates.</p>
+                         <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white">Unlock Full Potential</h2>
+                         <p className="text-xl text-neutral-400">Get advanced AI features and unlimited snippet storage.</p>
                      </div>
                      
-                     <div className="flex items-end justify-center gap-4">
-                        <span className="text-2xl text-neutral-600 line-through mb-4 font-bold decoration-2">$299</span>
-                        <span className="text-7xl md:text-9xl font-black text-[#FFBE1A] tracking-tighter leading-none">$169</span>
-                        <span className="text-xl text-neutral-500 font-bold mb-4">USD</span>
+                     <div className="flex flex-col items-center justify-center space-y-4">
+                         <div className="flex items-end justify-center gap-4">
+                            <span className="text-7xl md:text-9xl font-black text-[#FFBE1A] tracking-tighter leading-none">₹250</span>
+                            <span className="text-xl text-neutral-500 font-bold mb-4">/ month</span>
+                         </div>
                      </div>
                      
-                     <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto text-left pt-8">
-                         {["Unlimited Projects", "Lifetime Updates", "Community Access", "Commercial License", "Priority Support", "Pay via Stripe"].map((feat, i) => (
-                             <div key={i} className="flex items-center gap-3">
-                                 <div className="h-6 w-6 rounded-full bg-green-500/10 flex items-center justify-center shrink-0 border border-green-500/20">
-                                     <Check className="h-3.5 w-3.5 text-green-500" />
+                     <div className="flex justify-center w-full pt-8">
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-left">
+                             {["AI Generated Snippets", "Private Snippets", "Advanced Search", "Priority AI Queue", "Cloud Sync", "Secure Payments"].map((feat, i) => (
+                                 <div key={i} className="flex items-center gap-3">
+                                     <div className="h-6 w-6 rounded-full bg-green-500/10 flex items-center justify-center shrink-0 border border-green-500/20">
+                                         <Check className="h-3.5 w-3.5 text-green-500" />
+                                     </div>
+                                     <span className="text-base text-neutral-300 font-medium whitespace-nowrap">{feat}</span>
                                  </div>
-                                 <span className="text-base text-neutral-300 font-medium">{feat}</span>
-                             </div>
-                         ))}
+                             ))}
+                         </div>
                      </div>
                      
-                     <Link to="/login" className="block w-full max-w-md mx-auto">
-                        <Button className="w-full h-16 rounded-2xl text-xl font-bold bg-[#FFBE1A] hover:bg-[#FFBE1A]/90 text-black shadow-[0_0_40px_rgba(255,190,26,0.3)] mt-4 transition-all hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(255,190,26,0.4)] border-0">
-                            Get ShipFast-Clone
-                        </Button>
-                     </Link>
+                     <div className="flex justify-center mt-8">
+                        <UpgradeButton />
+                     </div>
                      
-                     <p className="text-sm text-neutral-500 font-medium">Secure payment with Stripe. 30-day money-back guarantee.</p>
+                     <p className="text-sm text-neutral-500 font-medium">Secure payment with Razorpay. Cancel anytime.</p>
                  </div>
             </motion.div>
         </section>

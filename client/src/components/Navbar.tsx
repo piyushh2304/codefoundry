@@ -14,7 +14,7 @@ const items = [
 ];
 
 export const Navbar = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -40,6 +40,16 @@ export const Navbar = () => {
                 <Zap className="h-5 w-5 text-yellow-400 fill-yellow-400" /> 
             </div>
             <span className="text-xl">CodeFoundry</span>
+            {isAuthenticated && user && (
+                <div className={cn(
+                    "ml-2 px-2 py-0.5 rounded-full text-[10px] font-black tracking-widest uppercase border",
+                    user.plan === 'PRO' 
+                        ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" 
+                        : "bg-slate-500/10 text-slate-500 border-slate-500/20"
+                )}>
+                    {user.plan}
+                </div>
+            )}
         </Link>
 
         {/* Desktop Links */}
@@ -65,6 +75,20 @@ export const Navbar = () => {
                     {isAuthenticated ? "Dashboard" : "Get Started"}
                 </Button>
             </Link>
+
+            {isAuthenticated && (
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => {
+                        logout();
+                        window.location.href = "/";
+                    }}
+                    className="text-muted-foreground hover:text-destructive hidden md:flex"
+                >
+                    Logout
+                </Button>
+            )}
             
             {/* Mobile Menu Toggle */}
             <button
@@ -100,6 +124,30 @@ export const Navbar = () => {
                   <span className="text-sm text-muted-foreground">Theme</span>
                   <ModeToggle />
               </div>
+              {isAuthenticated && user && (
+                <div className="pt-4 flex items-center justify-between border-t border-border/40">
+                  <span className="text-sm text-muted-foreground">Subscription</span>
+                  <span className={cn(
+                    "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider",
+                    user.plan === 'PRO' 
+                        ? "bg-yellow-500/10 text-yellow-500" 
+                        : "bg-slate-500/10 text-slate-500"
+                  )}>
+                    {user.plan} Plan
+                  </span>
+                </div>
+              )}
+              {isAuthenticated && (
+                <button
+                  onClick={() => {
+                    logout();
+                    window.location.href = "/";
+                  }}
+                  className="w-full text-left pt-4 text-sm font-bold text-red-500 border-t border-border/40"
+                >
+                  Logout
+                </button>
+              )}
             </div>
           </motion.div>
         )}

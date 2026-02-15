@@ -12,9 +12,13 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    exclude: ["monaco-themes"],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "monaco-themes/themes": path.resolve(__dirname, "./node_modules/monaco-themes/themes"),
     },
   },
 })

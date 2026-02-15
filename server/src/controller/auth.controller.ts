@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
-
-
-const prisma = new PrismaClient();
+import { prisma } from '../lib/prisma.js';
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
 
 
@@ -13,7 +10,8 @@ const generateToken = (user: any) => {
     return jwt.sign({
         id: user.id,
         email: user.email,
-        role: user.role
+        role: user.role,
+        plan: user.plan
     }, JWT_SECRET, {
         expiresIn: '7d'
     })
@@ -41,7 +39,7 @@ export const register = async (req: Request, res: Response) => {
         });
 
         const token = generateToken(user);
-        res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, picture: user.picture } });
+        res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, picture: user.picture, plan: user.plan, aiUsageCount: (user as any).aiUsageCount } });
     } catch (error) {
         console.error("Register Error:", error);
         res.status(500).json({ message: 'Server error', error });
@@ -56,7 +54,7 @@ export const login = async (req: Request, res: Response) => {
         const isMatch = await bcrypt.compare(password, user.passwordHash);
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
         const token = generateToken(user);
-        res.json({ token, user: { id: user.id, email: user.email, name: user.name, picture: user.picture } });
+        res.json({ token, user: { id: user.id, email: user.email, name: user.name, picture: user.picture, plan: user.plan, aiUsageCount: (user as any).aiUsageCount } });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -79,7 +77,7 @@ export const getMe = async (req: Request, res: Response) => {
         const user = await prisma.user.findUnique({ where: { id: userId } });
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        res.json({ id: user.id, email: user.email, name: user.name, picture: user.picture, role: user.role });
+        res.json({ id: user.id, email: user.email, name: user.name, picture: user.picture, role: user.role, plan: user.plan, aiUsageCount: (user as any).aiUsageCount });
     } catch (error) {
         res.status(500).json({ message: "Server error" });
     }
