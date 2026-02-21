@@ -66,20 +66,20 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <DashboardNav />
       
-      <main className="flex-1 container py-8 px-4 md:px-8 mx-auto max-w-7xl">
-        <div className="grid gap-12">
+      <main className="flex-1 container py-6 md:py-10 px-4 sm:px-6 md:px-8 mx-auto max-w-7xl">
+        <div className="grid gap-8 md:gap-12">
             
             {/* Your Snippets - Sticky/Prominent Top Card */}
             {user && (
                 <section className="relative">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-2">
-                             <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500">
+                    <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-6 text-center sm:text-left">
+                        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+                             <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-500 shadow-inner">
                                 <Sparkles size={20} />
                              </div>
                              <div>
-                                <h2 className="text-2xl font-bold tracking-tight">Your AI Library</h2>
-                                <p className="text-sm text-muted-foreground">Quick access to your generated snippets.</p>
+                                <h2 className="text-xl md:text-2xl font-bold tracking-tight">Your AI Library</h2>
+                                <p className="text-xs md:text-sm text-muted-foreground">Quick access to your generated snippets.</p>
                              </div>
                         </div>
                         {userSnippets.length > 0 && (
@@ -158,9 +158,9 @@ const Dashboard = () => {
                 </section>
             )}
 
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight mb-2">Language Hub</h1>
-                <p className="text-muted-foreground text-lg">Select a language to browse curated code snippets.</p>
+            <div className="mt-4 md:mt-8 text-center md:text-left">
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">Language Hub</h1>
+                <p className="text-muted-foreground text-base md:text-lg">Select a language to browse curated code snippets.</p>
             </div>
             
             {loading ? (

@@ -130,10 +130,10 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative order-1 lg:order-2 flex justify-center lg:justify-center h-[500px] lg:h-[600px] w-full items-center select-none pointer-events-none"
+              className="relative order-1 lg:order-2 flex justify-center lg:justify-center h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] w-full items-center select-none pointer-events-none"
             >
                {/* Main Container */}
-               <div className="relative w-full max-w-[550px] aspect-square">
+               <div className="relative w-full max-w-[550px] aspect-square scale-[0.6] sm:scale-[0.8] md:scale-90 lg:scale-100 transition-transform duration-500">
                   
                   {/* Organic Shape/Glow Background */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/5 via-transparent to-blue-500/5 rounded-full blur-[80px]" />
@@ -474,12 +474,12 @@ export default function LandingPage() {
                     <h4 className="font-bold text-2xl text-white tracking-tight">CodeFoundry</h4>
                  </div>
                  <p className="text-neutral-500 mb-8 max-w-sm mx-auto font-medium">Built to help you ship your dream project faster than ever before.</p>
-                  <div className="flex justify-center gap-8 text-sm font-bold text-neutral-400">
-                     <Link to="/features" className="hover:text-white transition-colors">Features</Link>
-                     <Link to="#" className="hover:text-white transition-colors">Terms of Service</Link>
-                     <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-                     <Link to="#" className="hover:text-white transition-colors">Twitter</Link>
-                     <Link to="#" className="text-yellow-500/80 hover:text-yellow-500 transition-colors">Affiliates</Link>
+                  <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm font-bold text-neutral-400 px-4">
+                     <Link to="/features" className="hover:text-white transition-colors whitespace-nowrap">Features</Link>
+                     <Link to="#" className="hover:text-white transition-colors whitespace-nowrap">Terms of Service</Link>
+                     <Link to="#" className="hover:text-white transition-colors whitespace-nowrap">Privacy Policy</Link>
+                     <Link to="#" className="hover:text-white transition-colors whitespace-nowrap">Twitter</Link>
+                     <Link to="#" className="text-yellow-500/80 hover:text-yellow-500 transition-colors whitespace-nowrap">Affiliates</Link>
                   </div>
                  <div className="mt-12 text-xs text-neutral-700 font-mono">
                      © 2024 CodeFoundry Inc. All rights reserved.

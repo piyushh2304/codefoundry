@@ -158,7 +158,7 @@ const FeaturesPage = () => {
             <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-[0.2em] uppercase bg-primary/10 text-primary border border-primary/20 rounded-full">
               Why CodeFoundry?
             </span>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 leading-[1.1]">
+            <h1 className="text-4xl md:text-7xl font-black tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 leading-[1.1] px-4">
               The Operating System <br className="hidden md:block" />
               for Your <span className="text-primary italic">Developer Library</span>
             </h1>
@@ -222,7 +222,7 @@ const FeaturesPage = () => {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xs font-black uppercase mb-6 tracking-widest">
               <Sparkles className="w-3 h-3" /> Advanced AI
             </div>
-            <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">
+            <h2 className="text-3xl md:text-5xl font-black mb-8 leading-tight">
               A Private AI <br />
               Tailored for Developers
             </h2>
@@ -241,11 +241,13 @@ const FeaturesPage = () => {
                 </div>
               ))}
             </div>
-            <Link to="/ask-ai" className="mt-12 block">
-              <Button className="h-14 px-8 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white border-0 shadow-lg shadow-purple-500/20">
-                Experience the magic
-              </Button>
-            </Link>
+            <div className="mt-10 md:mt-12">
+              <Link to="/ask-ai">
+                <Button className="w-full sm:w-auto h-14 px-8 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white border-0 shadow-lg shadow-purple-500/20">
+                  Experience the magic
+                </Button>
+              </Link>
+            </div>
           </motion.div>
 
           <motion.div
@@ -328,7 +330,7 @@ const FeaturesPage = () => {
         <div className="max-w-5xl mx-auto relative rounded-[3rem] overflow-hidden">
           <div className="absolute inset-0 bg-primary/10 backdrop-blur-3xl" />
           <div className="relative z-10 p-12 md:p-24 text-center">
-            <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight">
+            <h2 className="text-3xl md:text-6xl font-black text-white mb-8 tracking-tight px-4">
               Stop re-writing. <br />
               Start <span className="text-primary italic">building.</span>
             </h2>
@@ -389,10 +391,10 @@ const FeaturesPage = () => {
           <p className="text-slate-500 text-sm font-medium">
             © 2024 CodeFoundry. Built with ❤️ for the developer community.
           </p>
-          <div className="flex gap-8 text-sm font-bold text-slate-400">
-            <Link to="/" className="hover:text-white transition-colors">Home</Link>
-            <Link to="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
-            <Link to="/ask-ai" className="hover:text-white transition-colors">AI</Link>
+          <div className="flex flex-wrap gap-x-8 gap-y-4 text-sm font-bold text-slate-400">
+            <Link to="/" className="hover:text-white transition-colors whitespace-nowrap">Home</Link>
+            <Link to="/dashboard" className="hover:text-white transition-colors whitespace-nowrap">Dashboard</Link>
+            <Link to="/ask-ai" className="hover:text-white transition-colors whitespace-nowrap">AI</Link>
           </div>
         </div>
       </footer>

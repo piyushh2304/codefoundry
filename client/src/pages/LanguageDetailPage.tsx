@@ -3,10 +3,19 @@ import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DashboardNav } from "@/components/DashboardNav";
 import { Editor as MonacoEditor } from "@monaco-editor/react";
-import { Copy, Check, ChevronRight, Code2, Palette } from "lucide-react";
+import { Copy, Check, ChevronRight, Code2, Palette, ListFilter } from "lucide-react";
 import api from '@/lib/axios';
 import Editor from '@/components/Editor';
 import { defineThemes, monacoThemes } from '@/lib/monaco-themes';
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
 
 interface SnippetStep {
   id: string;
@@ -129,8 +138,56 @@ const LanguageDetailPage = () => {
     <div className="min-h-screen bg-[#050505] text-slate-300 flex flex-col selection:bg-primary/30">
       <DashboardNav />
       
-      <div className="flex-1 flex max-w-[1600px] mx-auto w-full">
-        {/* Sidebar - Left */}
+      <div className="flex-1 flex max-w-[1600px] mx-auto w-full relative">
+        {/* Mobile Navigation Trigger - Floating */}
+        <div className="lg:hidden fixed bottom-6 right-6 z-50">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button size="lg" className="rounded-full h-14 w-14 shadow-2xl bg-primary hover:bg-primary/90 text-primary-foreground">
+                <ListFilter size={24} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="bg-[#050505] border-slate-800 p-0 w-[280px]">
+              <div className="h-full overflow-y-auto pt-10 px-6 scrollbar-hide">
+                <SheetHeader className="mb-8 text-left">
+                  <SheetTitle className="text-xl font-bold text-white tracking-tight">
+                    {data.name} Reference
+                  </SheetTitle>
+                </SheetHeader>
+                <nav className="space-y-10 pb-20">
+                  {data.categories.map((category) => (
+                    <div key={category.id} className="space-y-4">
+                      <h3 className="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.15em] mb-4 opacity-70">
+                        {category.name}
+                      </h3>
+                      <div className="ml-1 pl-3 border-l border-white/[0.05] space-y-1">
+                        {category.snippets.map((snippet) => (
+                          <SheetClose asChild key={snippet.id}>
+                            <button
+                              onClick={() => {
+                                setSelectedSnippet(snippet);
+                                setSelectedCategoryId(category.id);
+                              }}
+                              className={`w-full text-left px-3 py-2 rounded-md text-[13px] font-medium transition-all ${
+                                selectedSnippet?.id === snippet.id 
+                                  ? 'text-white bg-white/5' 
+                                  : 'text-slate-500 hover:text-slate-300'
+                              }`}
+                            >
+                              {snippet.title}
+                            </button>
+                          </SheetClose>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        {/* Sidebar - Left (Desktop Only) */}
         <aside className="w-[240px] border-r border-slate-800 bg-[#050505] sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto hidden lg:block scrollbar-hide">
           <div className="py-8 px-4">
             <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.1em] border-b border-slate-800 pb-6 mb-10 px-2 whitespace-nowrap text-center">
@@ -174,7 +231,7 @@ const LanguageDetailPage = () => {
         </aside>
 
         {/* Main Content - Center */}
-        <main className="flex-1 overflow-y-auto pb-32 px-4 md:px-12 lg:px-20 scrollbar-hide">
+        <main className="flex-1 overflow-y-auto pb-32 px-4 md:px-8 lg:px-20 scrollbar-hide ">
           <AnimatePresence mode="wait">
             {selectedSnippet ? (
               <motion.div
@@ -209,11 +266,11 @@ const LanguageDetailPage = () => {
                     </div>
                   </div>
 
-                  <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-6">
+                  <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-6">
                     {selectedSnippet.title}
                   </h1>
                   {selectedSnippet.description && (
-                    <div className="text-lg text-slate-400 leading-relaxed -ml-4 prose-h2:scroll-mt-24 prose-h3:scroll-mt-24">
+                    <div className="text-base md:text-lg text-slate-400 leading-relaxed -ml-4 prose-h2:scroll-mt-24 prose-h3:scroll-mt-24">
                       <Editor 
                         readOnly={true} 
                         initialContent={selectedSnippet.description} 

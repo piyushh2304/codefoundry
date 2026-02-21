@@ -42,7 +42,7 @@ export const Navbar = () => {
             <span className="text-xl">CodeFoundry</span>
             {isAuthenticated && user && (
                 <div className={cn(
-                    "ml-2 px-2 py-0.5 rounded-full text-[10px] font-black tracking-widest uppercase border",
+                    "ml-2 px-2 py-0.5 rounded-full text-[10px] font-black tracking-widest uppercase border hidden sm:block",
                     user.plan === 'PRO' 
                         ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" 
                         : "bg-slate-500/10 text-slate-500 border-slate-500/20"
@@ -70,7 +70,7 @@ export const Navbar = () => {
             <div className="hidden md:block">
                <ModeToggle />
             </div>
-            <Link to={isAuthenticated ? "/dashboard" : "/login"}>
+            <Link to={isAuthenticated ? "/dashboard" : "/login"} className="hidden md:block">
                 <Button className="rounded-full font-semibold px-6" size="default">
                     {isAuthenticated ? "Dashboard" : "Get Started"}
                 </Button>
@@ -110,30 +110,53 @@ export const Navbar = () => {
             className="md:hidden bg-background border-b border-border/40 overflow-hidden"
           >
             <div className="flex flex-col p-6 space-y-4">
-              {items.map((item) => (
-                <Link
-                  key={item.title}
-                  to={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className="text-lg font-medium text-muted-foreground hover:text-foreground"
+              {items.map((item, idx) => (
+                <motion.div
+                    key={item.title}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
                 >
-                  {item.title}
-                </Link>
+                    <Link
+                      to={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className="text-lg font-medium text-muted-foreground hover:text-foreground block"
+                    >
+                      {item.title}
+                    </Link>
+                </motion.div>
               ))}
-              <div className="pt-4 flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Theme</span>
+
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: items.length * 0.1 }}
+                className="pt-2"
+              >
+                  <Link 
+                    to={isAuthenticated ? "/dashboard" : "/login"}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <Button className="w-full rounded-xl font-bold h-12 shadow-lg shadow-primary/20">
+                        {isAuthenticated ? "Dashboard" : "Get Started"}
+                    </Button>
+                  </Link>
+              </motion.div>
+
+              <div className="pt-4 flex items-center justify-between border-t border-border/40">
+                  <span className="text-sm text-muted-foreground font-medium">Theme</span>
                   <ModeToggle />
               </div>
               {isAuthenticated && user && (
                 <div className="pt-4 flex items-center justify-between border-t border-border/40">
-                  <span className="text-sm text-muted-foreground">Subscription</span>
+                  <span className="text-sm text-muted-foreground font-medium">Plan Status</span>
                   <span className={cn(
-                    "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider",
+                    "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
                     user.plan === 'PRO' 
-                        ? "bg-yellow-500/10 text-yellow-500" 
-                        : "bg-slate-500/10 text-slate-500"
+                        ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" 
+                        : "bg-slate-500/10 text-slate-500 border-slate-500/20"
                   )}>
-                    {user.plan} Plan
+                    {user.plan}
                   </span>
                 </div>
               )}
@@ -143,7 +166,7 @@ export const Navbar = () => {
                     logout();
                     window.location.href = "/";
                   }}
-                  className="w-full text-left pt-4 text-sm font-bold text-red-500 border-t border-border/40"
+                  className="w-full text-left pt-4 text-sm font-bold text-red-500 border-t border-border/40 flex items-center gap-2"
                 >
                   Logout
                 </button>

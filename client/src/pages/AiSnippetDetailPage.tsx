@@ -125,13 +125,13 @@ const AiSnippetDetailPage = () => {
                         </div>
                     </div>
 
-                    <h1 className="text-4xl md:text-7xl font-black tracking-tight text-white mb-10 bg-gradient-to-r from-white via-white to-white/30 bg-clip-text text-transparent">
+                    <h1 className="text-3xl sm:text-4xl md:text-7xl font-black tracking-tight text-white mb-10 bg-gradient-to-r from-white via-white to-white/30 bg-clip-text text-transparent break-words">
                         {snippet.title}
                     </h1>
 
                     {/* Overall Description */}
-                    <div className="max-w-3xl border-l-2 border-indigo-500/30 pl-8 ml-1">
-                         <div className="prose prose-invert prose-p:text-xl prose-p:text-slate-400 prose-p:leading-relaxed">
+                    <div className="max-w-3xl border-l-2 border-indigo-500/30 pl-4 md:pl-8 ml-1">
+                         <div className="prose prose-invert prose-p:text-lg md:prose-p:text-xl prose-p:text-slate-400 prose-p:leading-relaxed">
                             <Editor readOnly={true} initialContent={snippet.description} onChange={() => {}} />
                          </div>
                     </div>
@@ -145,7 +145,7 @@ const AiSnippetDetailPage = () => {
                             return (
                                 <div key={step.id || idx} className="space-y-10 scroll-mt-24">
                                     <div className="space-y-6">
-                                        <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight flex items-center gap-6">
+                                        <h2 className="text-2xl md:text-5xl font-black text-white tracking-tight flex items-center gap-4 md:gap-6">
                                             <span className="text-indigo-500/30 tabular-nums">{(idx + 1).toString().padStart(2, '0')}</span>
                                             {cleanTitle || step.title}
                                         </h2>
@@ -176,7 +176,7 @@ const AiSnippetDetailPage = () => {
                 </div>
 
                 {/* Technical Card */}
-                <div className="mt-20 p-10 rounded-3xl border border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent relative overflow-hidden group">
+                <div className="mt-16 md:mt-20 p-6 md:p-10 rounded-3xl border border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                         <Sparkles size={40} className="text-indigo-400" />
                     </div>

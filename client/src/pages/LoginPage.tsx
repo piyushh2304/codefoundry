@@ -541,8 +541,8 @@ export default function LoginPage() {
           </div>
 
           {/* Header */}
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome back!</h1>
+          <div className="text-center mb-8 md:mb-10">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">Welcome back!</h1>
             <p className="text-muted-foreground text-sm">Please enter your details</p>
           </div>
 

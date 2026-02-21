@@ -163,25 +163,25 @@ const AskAI = () => {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
                                 className={cn(
-                                    "flex gap-6 group relative",
+                                    "flex gap-3 md:gap-6 group relative",
                                     msg.role === 'user' ? "flex-row-reverse" : "flex-row"
                                 )}
                             >
                                 {/* Avatar Section */}
                                 <div className="shrink-0 pt-1">
                                     <div className={cn(
-                                        "h-10 w-10 rounded-2xl flex items-center justify-center border shadow-lg transition-transform group-hover:scale-110",
+                                        "h-8 w-8 md:h-10 md:w-10 rounded-xl md:rounded-2xl flex items-center justify-center border shadow-lg transition-transform group-hover:scale-110",
                                         msg.role === 'assistant' 
                                             ? "bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border-indigo-500/30 text-indigo-400 shadow-indigo-500/5" 
                                             : "bg-slate-900 border-white/5 text-slate-400 shadow-black/20"
                                     )}>
-                                        {msg.role === 'assistant' ? <Bot size={22} className="drop-shadow-sm" /> : <User size={22} />}
+                                        {msg.role === 'assistant' ? <Bot size={18} className="md:size-[22px] drop-shadow-sm" /> : <User size={18} className="md:size-[22px]" />}
                                     </div>
                                 </div>
 
                                 {/* Message Content */}
                                 <div className={cn(
-                                    "flex flex-col max-w-[85%]",
+                                    "flex flex-col max-w-[90%] md:max-w-[85%]",
                                     msg.role === 'user' ? "items-end" : "items-start"
                                 )}>
                                     <div className="flex items-center gap-3 mb-2 px-1">
@@ -207,7 +207,7 @@ const AskAI = () => {
                                     </div>
 
                                     <div className={cn(
-                                        "rounded-3xl px-6 py-5 shadow-2xl relative transition-all",
+                                        "rounded-2xl md:rounded-3xl px-4 md:px-6 py-4 md:py-5 shadow-2xl relative transition-all",
                                         msg.role === 'assistant' 
                                             ? "bg-[#0a0a0d] border border-white/5 text-slate-200" 
                                             : "bg-indigo-600/10 border border-indigo-500/20 text-indigo-50 shadow-indigo-500/5"
@@ -283,8 +283,8 @@ const AskAI = () => {
                         <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-[2rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
                         <div className="relative flex items-center">
                             <Input
-                                placeholder="Ask about MERN stack, Node.js utilities, or specific features..."
-                                className="w-full bg-[#0d0d0f]/80 backdrop-blur-xl border-white/10 focus:border-indigo-500/50 h-16 pl-8 pr-20 rounded-[1.5rem] text-lg transition-all focus:ring-0 placeholder:text-slate-600 shadow-2xl"
+                                placeholder="Ask about MERN, Node.js..."
+                                className="w-full bg-[#0d0d0f]/80 backdrop-blur-xl border-white/10 focus:border-indigo-500/50 h-14 md:h-16 pl-5 md:pl-8 pr-16 md:pr-20 rounded-2xl md:rounded-[1.5rem] text-base md:text-lg transition-all focus:ring-0 placeholder:text-slate-600 shadow-2xl"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
