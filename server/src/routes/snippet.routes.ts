@@ -9,12 +9,14 @@ import {
     createLanguage,
     createCategory,
     getUserSnippets,
-    getSnippetById
+    getSnippetById,
+    getSearch
 } from '../controller/snippet.controller.js';
 
 const router = Router();
 
 router.get('/languages', getLanguages);
+router.get('/search', getSearch);
 router.get('/languages/:langSlug/snippets', getSnippetsByLanguage);
 router.get('/categories', getCategories);
 router.get('/user-snippets', getUserSnippets);

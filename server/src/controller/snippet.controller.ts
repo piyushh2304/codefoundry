@@ -277,3 +277,60 @@ export const createCategory = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+export const getSearch = async (req: Request, res: Response) => {
+    const query = req.query.q as string;
+    if (!query) return res.json({ results: [] });
+
+    try {
+        const [languages, snippets] = await Promise.all([
+            prisma.language.findMany({
+                where: {
+                    OR: [
+                        { name: { contains: query, mode: 'insensitive' } },
+                        { slug: { contains: query, mode: 'insensitive' } }
+                    ]
+                },
+                take: 5
+            }),
+            prisma.snippet.findMany({
+                where: {
+                    AND: [
+                        { isVisible: true },
+                        {
+                            OR: [
+                                { title: { contains: query, mode: 'insensitive' } },
+                                { description: { contains: query, mode: 'insensitive' } }
+                            ]
+                        }
+                    ]
+                },
+                include: {
+                    category: { include: { language: true } }
+                },
+                take: 10
+            })
+        ]);
+
+        const formattedResults = [
+            ...languages.map(l => ({
+                id: l.id,
+                title: l.name,
+                description: `Browse all ${l.name} code snippets and patterns.`,
+                type: 'language',
+                to: `/snippets/${l.slug}`
+            })),
+            ...snippets.map(s => ({
+                id: s.id,
+                title: s.title,
+                description: s.description || 'View details for this code snippet.',
+                type: s.isAiGenerated ? 'ai' : 'curated',
+                to: s.isAiGenerated ? `/ai-snippets/${s.id}` : `/snippets/${(s as any).category.language.slug}`
+            }))
+        ];
+
+        res.json({ results: formattedResults });
+    } catch (error) {
+        console.error('Search error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
