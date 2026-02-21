@@ -12,8 +12,10 @@ import {
   Sparkles,
   Share2,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  ArrowLeft
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Editor from '@/components/Editor';
@@ -150,6 +152,13 @@ const AdminPage = () => {
       <DashboardNav />
       
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-12">
+        <Link 
+            to="/dashboard" 
+            className="group mb-8 flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-500 transition-colors hover:text-white"
+        >
+            <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
+            Back to Dashboard
+        </Link>
         <div className="flex items-center justify-between mb-12">
           <div>
             <h1 className="text-4xl font-extrabold text-white tracking-tight flex items-center gap-3">

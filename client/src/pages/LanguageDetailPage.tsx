@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DashboardNav } from "@/components/DashboardNav";
 import { Editor as MonacoEditor } from "@monaco-editor/react";
-import { Copy, Check, ChevronRight, Code2, Palette, ListFilter } from "lucide-react";
+import { Copy, Check, ChevronRight, Code2, Palette, ListFilter, ArrowLeft } from "lucide-react";
 import api from '@/lib/axios';
 import Editor from '@/components/Editor';
 import { defineThemes, monacoThemes } from '@/lib/monaco-themes';
@@ -241,11 +241,20 @@ const LanguageDetailPage = () => {
                 exit={{ opacity: 0, y: -10 }}
                 className="max-w-4xl pt-12"
               >
-                {/* Breadcrumbs */}
-                <div className="flex items-center gap-2 text-[11px] font-bold tracking-widest text-slate-500 uppercase mb-4">
+                {/* Back Button & Breadcrumbs */}
+                <div className="flex flex-col gap-6 mb-8">
+                  <Link 
+                    to="/dashboard" 
+                    className="group flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-500 transition-colors hover:text-white"
+                  >
+                    <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
+                    Back to Dashboard
+                  </Link>
+                  <div className="flex items-center gap-2 text-[11px] font-bold tracking-widest text-slate-500 uppercase">
                     <span>{data.name}</span>
                     <ChevronRight size={12} className="text-slate-700" />
                     <span className="text-primary/80">{data.categories.find(c => c.id === selectedCategoryId)?.name}</span>
+                  </div>
                 </div>
 
                  <div className="mb-14 relative group/header">

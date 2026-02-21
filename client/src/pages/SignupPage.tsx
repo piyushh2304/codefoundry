@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import api from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Mail, Sparkles } from "lucide-react";
+import { Eye, EyeOff, Mail, Sparkles, ArrowLeft } from "lucide-react";
 
 interface PupilProps {
   size?: number;
@@ -337,6 +337,13 @@ export default function SignupPage() {
     <div className="min-h-screen grid lg:grid-cols-2">
       <div className="relative hidden lg:flex flex-col justify-between bg-gradient-to-br from-primary/90 via-primary to-primary/80 p-12 text-primary-foreground">
         <div className="relative z-20">
+          <Link 
+            to="/" 
+            className="group mb-8 flex w-fit items-center gap-2 text-sm font-medium text-primary-foreground/60 transition-colors hover:text-primary-foreground"
+          >
+            <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+            Back to home
+          </Link>
           <div className="flex items-center gap-2 text-lg font-semibold">
             <div className="size-8 rounded-lg bg-primary-foreground/10 backdrop-blur-sm flex items-center justify-center">
               <Sparkles className="size-4" />

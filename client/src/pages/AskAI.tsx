@@ -7,8 +7,10 @@ import {
     Loader2, 
     Sparkles, 
     Database,
-    Globe
+    Globe,
+    ArrowLeft
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import api from '@/lib/axios';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -155,6 +157,13 @@ const AskAI = () => {
             {/* Chat Container */}
             <div className="flex-1 overflow-y-auto px-4 relative z-10 custom-scrollbar pb-40">
                 <div className="max-w-4xl mx-auto py-10 space-y-12">
+                    <Link 
+                        to="/dashboard" 
+                        className="group flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-500 transition-colors hover:text-white"
+                    >
+                        <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
+                        Back to Dashboard
+                    </Link>
                     <AnimatePresence mode="popLayout">
                         {messages.map((msg, idx) => (
                             <motion.div

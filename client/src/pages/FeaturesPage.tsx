@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Github,
   Plus,
-  Minus
+  Minus,
+  ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -147,6 +148,16 @@ const FeaturesPage = () => {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
           <div className="absolute top-24 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse" />
           <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[140px]" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10 mb-12">
+          <Link 
+            to="/" 
+            className="group flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-500 transition-colors hover:text-white"
+          >
+            <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
+            Back to Home
+          </Link>
         </div>
 
         <div className="max-w-7xl mx-auto text-center relative z-10">
