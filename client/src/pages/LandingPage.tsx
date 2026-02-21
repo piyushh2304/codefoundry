@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Zap, Check, Star, Database, Lock, LayoutTemplate, Github, Triangle } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { UpgradeButton } from "@/components/UpgradeButton";
+import api from "@/lib/axios";
 
 // --- Avatars for Social Proof ---
 const Avatars = () => (
@@ -50,7 +51,10 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
 };
 
 export default function LandingPage() {
-  
+  React.useEffect(() => {
+    // Pre-warm the backend (Render free tier cold start mitigation)
+    api.get("/health").catch(() => {});
+  }, []);
   return (
     <div className="min-h-screen bg-[#050505] text-foreground overflow-x-hidden selection:bg-yellow-400/30 selection:text-yellow-600 font-sans">
       

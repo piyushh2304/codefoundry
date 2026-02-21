@@ -181,6 +181,11 @@ export default function LoginPage() {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
+
+  // Pre-warm the backend (Render free tier)
+  useEffect(() => {
+    api.get("/health").catch(() => {});
+  }, []);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -322,8 +327,16 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${api.defaults.baseURL}/auth/google`;
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    try {
+      // Ensure backend is awake before redirecting to avoid Render's "Service Waking Up" page
+      await api.get("/health");
+      window.location.href = `${api.defaults.baseURL}/auth/google`;
+    } catch (err) {
+      // Fallback: redirect anyway if health check fails
+      window.location.href = `${api.defaults.baseURL}/auth/google`;
+    }
   };
 
 
@@ -630,6 +643,7 @@ export default function LoginPage() {
               variant="outline" 
               className="w-full h-12 bg-background border-border/60 hover:bg-accent"
               type="button"
+              disabled={isLoading}
               onClick={handleGoogleLogin}
             >
               <Mail className="mr-2 size-5" />
