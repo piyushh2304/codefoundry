@@ -400,6 +400,7 @@ const FeaturesPage = () => {
         </div>
       </section>
 
+
       {/* FAQ Section */}
       <section id="faq" className="py-32 px-6">
         <div className="max-w-7xl mx-auto">

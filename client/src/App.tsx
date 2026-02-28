@@ -1,5 +1,6 @@
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
@@ -14,6 +15,26 @@ import AskAI from "@/pages/AskAI";
 import AiSnippetDetailPage from "@/pages/AiSnippetDetailPage";
 import FeaturesPage from "@/pages/FeaturesPage";
 
+const ScrollToHash = () => {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      const id = hash.replace("#", "");
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
+
+  return null;
+};
+
 
 function App() {
   return (
@@ -21,6 +42,7 @@ function App() {
       <AuthProvider>
         <Toaster richColors position="top-center" />
         <BrowserRouter>
+            <ScrollToHash />
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
