@@ -15,8 +15,12 @@ import {
   Github,
   Plus,
   Minus,
-  ArrowLeft
+  ArrowLeft,
+  Binary,
+  Layers,
+  Terminal
 } from 'lucide-react';
+import { useScroll, useTransform, useSpring } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -138,16 +142,47 @@ const FAQItem = ({ item, index }: { item: typeof faqItems[0], index: number }) =
 };
 
 const FeaturesPage = () => {
+  const { scrollYProgress } = useScroll();
+  
+  // Parallax values for background elements
+  const y1 = useSpring(useTransform(scrollYProgress, [0, 1], [0, -200]), { stiffness: 100, damping: 30 });
+  const y2 = useSpring(useTransform(scrollYProgress, [0, 1], [0, -400]), { stiffness: 100, damping: 30 });
+  const y3 = useSpring(useTransform(scrollYProgress, [0, 1], [0, 300]), { stiffness: 100, damping: 30 });
+  const rotate1 = useTransform(scrollYProgress, [0, 1], [0, 45]);
+  const rotate2 = useTransform(scrollYProgress, [0, 1], [0, -90]);
+
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-primary/30 font-sans overflow-x-hidden">
       <Navbar />
       
+      {/* Floating Decorative Icons (Parallax) */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <motion.div style={{ y: y1, rotate: rotate1 }} className="absolute top-[10%] left-[5%] opacity-10">
+          <Binary size={120} className="text-primary" />
+        </motion.div>
+        <motion.div style={{ y: y2, rotate: rotate2 }} className="absolute top-[40%] right-[8%] opacity-10">
+          <Terminal size={100} className="text-purple-500" />
+        </motion.div>
+        <motion.div style={{ y: y3, rotate: rotate1 }} className="absolute top-[70%] left-[10%] opacity-10">
+          <Layers size={150} className="text-blue-500" />
+        </motion.div>
+        <motion.div style={{ y: y1, rotate: rotate2 }} className="absolute top-[85%] right-[15%] opacity-10">
+          <Code2 size={80} className="text-emerald-500" />
+        </motion.div>
+      </div>
+      
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-6 overflow-hidden">
-        {/* Abstract Background Elements */}
+        {/* Abstract Background Elements with Parallax */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-          <div className="absolute top-24 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[140px]" />
+          <motion.div 
+            style={{ y: y1 }}
+            className="absolute top-24 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse" 
+          />
+          <motion.div 
+            style={{ y: y2 }}
+            className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[140px]" 
+          />
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 mb-12">
@@ -169,9 +204,9 @@ const FeaturesPage = () => {
             <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-[0.2em] uppercase bg-primary/10 text-primary border border-primary/20 rounded-full">
               Why CodeFoundry?
             </span>
-            <h1 className="text-4xl md:text-7xl font-black tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 leading-[1.1] px-4">
-              The Operating System <br className="hidden md:block" />
-              for Your <span className="text-primary italic">Developer Library</span>
+            <h1 className="text-4xl md:text-7xl font-black tracking-tight mb-8 leading-[1.1] px-4">
+              <span className="text-white">The Operating System</span> <br className="hidden md:block" />
+              <span style={{ color: '#E8D754' }}>for Your</span> <span className="text-primary italic">Developer Library</span>
             </h1>
             <p className="text-xl text-slate-400 max-w-3xl mx-auto mb-12 leading-relaxed">
               CodeFoundry isn't just a snippet manager. It's an intelligent workspace where you can generate, 
@@ -226,6 +261,7 @@ const FeaturesPage = () => {
       <section className="py-32 px-6 bg-[#080808]/50 overflow-hidden">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
           <motion.div
+            style={{ y: y3 }}
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -262,6 +298,7 @@ const FeaturesPage = () => {
           </motion.div>
 
           <motion.div
+            style={{ y: y1 }}
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
