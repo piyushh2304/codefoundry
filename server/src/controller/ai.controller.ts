@@ -104,7 +104,7 @@ export const askAI = async (req: Request, res: Response) => {
             ? "Context Snippets:\n" + relevantSnippets.map(s => `Title: ${s.title}\nDesc: ${s.description}`).join("\n\n")
             : "No database matches. Use general knowledge.";
 
-        // --- 4. Generation & Reflection (Future / Agentic) ---
+        // --- 4. Generation & Streaming (SSE) ---
         const chatSession = model.startChat({
             history: [
                 { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
@@ -113,64 +113,70 @@ export const askAI = async (req: Request, res: Response) => {
             ]
         });
 
-        const initialResult = await chatSession.sendMessage(`Query: ${prompt}\n\nContext:\n${contextString}`);
-        let responseText = initialResult.response.text();
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+        
+        // Start by sending metadata (confidence, sources)
+        res.write(`data: ${JSON.stringify({ type: 'metadata', confidence: confidenceScore, sources: sources })}\n\n`);
 
-        // Agentic Reflection Loop
-        try {
-            const reflection = await chatSession.sendMessage("Reflection: Verify the technical accuracy and context alignment of your last response. Correct it if necessary and return ONLY the JSON.");
-            responseText = reflection.response.text();
-        } catch (e) {
-            console.warn("Reflection failed, continuing...");
+        const initialResult = await chatSession.sendMessageStream(`Query: ${prompt}\n\nContext:\n${contextString}`);
+
+        let fullContent = "";
+        for await (const chunk of initialResult.stream) {
+            const chunkText = chunk.text();
+            fullContent += chunkText;
+            res.write(`data: ${JSON.stringify({ type: 'chunk', text: chunkText })}\n\n`);
         }
 
-        // --- 5. Final Processing ---
-        let aiData;
-        try {
-            const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-            aiData = JSON.parse(cleanJson);
-        } catch (e) {
-            return res.status(500).json({ message: "Invalid AI Format" });
+        // Signal stream completion
+        res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
+        res.end(); // close stream
+
+        // --- 5. Background Processing ---
+        // Increment usage count for FREE users
+        if (user.plan === 'FREE') {
+            await prisma.user.update({
+                where: { id: userId },
+                data: { aiUsageCount: { increment: 1 } }
+            }).catch(() => { });
         }
 
-        // Auto-save & return
-        const newSnippet = await prisma.snippet.create({
-            data: {
-                title: aiData.title,
-                description: aiData.explanation,
-                feature: aiData.language,
-                userId: userId || null,
-                isAiGenerated: true,
-                steps: {
-                    create: (aiData.steps || []).map((s: any, i: number) => ({ title: s.title, description: s.description, code: s.code, order: i }))
-                }
-            } as any,
-            include: { steps: true }
-        });
-
-        // Persist history & Return
+        // Persist history 
         if (userId) {
             await (prisma as any).chatMessage.createMany({
-                data: [{ content: prompt, role: 'user', userId }, { content: aiData.explanation, role: 'assistant', userId }]
+                data: [{ content: prompt, role: 'user', userId }, { content: fullContent, role: 'assistant', userId }]
             }).catch(() => { });
-
-            // Increment usage count for FREE users
-            if (user.plan === 'FREE') {
-                await prisma.user.update({
-                    where: { id: userId },
-                    data: { aiUsageCount: { increment: 1 } }
-                }).catch(() => { });
-            }
         }
 
-        res.json({
-            explanation: aiData.explanation,
-            snippet: newSnippet,
-            steps: (newSnippet as any).steps,
-            language: aiData.language,
-            confidence: confidenceScore,
-            sources: sources
-        });
+        // Background extraction of snippet details (for library)
+        (async () => {
+            try {
+                const extractionPrompt = `Extract from this professional markdown response the necessary structured info. Please respond ONLY with valid JSON.
+Fields required: "title" (short descriptive title), "explanation" (brief overview), "language" (primary language slug), "steps" (Array of { title, description, code }).
+
+Response to extract:
+${fullContent}`;
+                const extractionResult = await model.generateContent(extractionPrompt);
+                const cleanJson = extractionResult.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+                const aiData = JSON.parse(cleanJson);
+                
+                await prisma.snippet.create({
+                    data: {
+                        title: aiData.title,
+                        description: aiData.explanation,
+                        feature: aiData.language,
+                        userId: userId || null,
+                        isAiGenerated: true,
+                        steps: {
+                            create: (aiData.steps || []).map((s: any, i: number) => ({ title: s.title, description: s.description, code: s.code, order: i }))
+                        }
+                    } as any
+                });
+            } catch (e) {
+                console.error("Failed to extract background snippet:", e);
+            }
+        })();
 
     } catch (error: any) {
         console.error('AI Error:', error);

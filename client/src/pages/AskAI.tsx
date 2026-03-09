@@ -11,12 +11,12 @@ import {
     ArrowLeft
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import api from '@/lib/axios';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { DashboardNav } from '@/components/DashboardNav';
 import { useAuth } from '@/context/AuthContext';
-import Editor from '@/components/Editor';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { UpgradeButton } from '@/components/UpgradeButton';
 
 interface Message {
@@ -74,48 +74,79 @@ const AskAI = () => {
         setIsLoading(true);
 
         try {
-            const response = await api.post('/ai/ask', {
-                prompt: input,
-                userId: user?.id
+            const token = localStorage.getItem('token');
+            const baseUrl = import.meta.env.VITE_API_URL || '/api';
+            const response = await fetch(`${baseUrl}/ai/ask`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
+                body: JSON.stringify({
+                    prompt: input,
+                    userId: user?.id
+                })
             });
 
-            const aiMessage: Message = {
-                id: (Date.now() + 1).toString(),
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || "I'm sorry, I encountered an error while processing your request.");
+            }
+
+            const aiMessageId = (Date.now() + 1).toString();
+            setMessages(prev => [...prev, {
+                id: aiMessageId,
                 role: 'assistant',
-                content: response.data.explanation,
-                snippet: response.data.snippet ? {
-                    title: response.data.snippet.title,
-                    code: response.data.snippet.code,
-                    language: response.data.language,
-                    category: response.data.category
-                } : undefined,
-                steps: response.data.steps,
-                isRaging: true,
-                isSearching: true
-            };
+                content: '',
+            }]);
 
-            setMessages(prev => [...prev, aiMessage]);
+            const reader = response.body?.getReader();
+            if (!reader) throw new Error('No stream returned');
+            const decoder = new TextDecoder();
+            let aiContent = "";
 
-            // Update usage count locally if user is FREE
-            if (user?.plan === 'FREE') {
-                updateUser({ aiUsageCount: (user.aiUsageCount || 0) + 1 });
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunkStr = decoder.decode(value, { stream: true });
+                const events = chunkStr.split('\n\n').filter(Boolean);
+
+                for (const event of events) {
+                    if (event.startsWith('data: ')) {
+                        const dataStr = event.replace('data: ', '');
+                        try {
+                            const data = JSON.parse(dataStr);
+                            if (data.type === 'metadata') {
+                                setMessages(prev => prev.map(msg => 
+                                    msg.id === aiMessageId ? { ...msg, isRaging: true, isSearching: data.confidence > 0 } : msg
+                                ));
+                            } else if (data.type === 'chunk') {
+                                aiContent += data.text;
+                                setMessages(prev => prev.map(msg => 
+                                    msg.id === aiMessageId ? { ...msg, content: aiContent } : msg
+                                ));
+                            } else if (data.type === 'done') {
+                                // Update usage count locally if user is FREE
+                                if (user?.plan === 'FREE') {
+                                    updateUser({ aiUsageCount: (user.aiUsageCount || 0) + 1 });
+                                }
+                            }
+                        } catch (e) {
+                            console.error("Failed to parse chunk", e);
+                        }
+                    }
+                }
             }
         } catch (error: any) {
             console.error('Error asking AI:', error);
-            const status = error.response?.status;
-            const message = error.response?.data?.message || "I'm sorry, I encountered an error while processing your request.";
+            const message = error.message || "I'm sorry, I encountered an error while processing your request.";
             
             setMessages(prev => [...prev, {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
                 content: message
             }]);
-
-            if (status === 403) {
-                // If the error was a limit error, we should probably trigger the overlay 
-                // but the local count update above should handle it for subsequent renders
-                // If they refresh, the server count will be accurate
-            }
         } finally {
             setIsLoading(false);
         }
@@ -221,18 +252,10 @@ const AskAI = () => {
                                             ? "bg-[#0a0a0d] border border-white/5 text-slate-200" 
                                             : "bg-indigo-600/10 border border-indigo-500/20 text-indigo-50 shadow-indigo-500/5"
                                     )}>
-                                        <div className="bg-transparent -mx-6 -my-4">
-                                            <Editor 
-                                                readOnly={true} 
-                                                initialContent={
-                                                    msg.role === 'assistant' && msg.steps 
-                                                    ? `${msg.content}\n\n${msg.steps.map(s => `## ${s.title}\n${s.description}\n\n\`\`\`${msg.snippet?.language || 'javascript'}\n${s.code}\n\`\`\``).join('\n\n')}`
-                                                    : msg.role === 'assistant' && msg.snippet
-                                                    ? `${msg.content}\n\n\`\`\`${msg.snippet.language}\n${msg.snippet.code}\n\`\`\``
-                                                    : msg.content
-                                                } 
-                                                onChange={() => {}} 
-                                            />
+                                        <div className="prose prose-invert prose-p:leading-relaxed prose-pre:p-4 prose-pre:bg-[#1a1a1a] prose-pre:rounded-xl prose-pre:border prose-pre:border-white/10 prose-headings:font-bold prose-headings:tracking-tight prose-a:text-indigo-400 hover:prose-a:text-indigo-300 max-w-none">
+                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                {msg.content}
+                                            </ReactMarkdown>
                                         </div>
                                     </div>
                                 </div>
