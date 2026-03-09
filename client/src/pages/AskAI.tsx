@@ -17,7 +17,11 @@ import { DashboardNav } from '@/components/DashboardNav';
 import { useAuth } from '@/context/AuthContext';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { UpgradeButton } from '@/components/UpgradeButton';
+import { Copy, Check } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Message {
     id: string;
@@ -247,42 +251,72 @@ const AskAI = () => {
                                     </div>
 
                                     <div className={cn(
-                                        "rounded-2xl md:rounded-3xl px-4 md:px-6 py-4 md:py-5 shadow-2xl relative transition-all",
+                                        "rounded-2xl md:rounded-3xl px-4 md:px-6 py-4 md:py-5 shadow-2xl relative transition-all overflow-hidden",
                                         msg.role === 'assistant' 
                                             ? "bg-[#0a0a0d] border border-white/5 text-slate-200" 
                                             : "bg-indigo-600/10 border border-indigo-500/20 text-indigo-50 shadow-indigo-500/5"
                                     )}>
-                                        <div className="prose prose-invert prose-p:leading-relaxed prose-pre:p-4 prose-pre:bg-[#1a1a1a] prose-pre:rounded-xl prose-pre:border prose-pre:border-white/10 prose-headings:font-bold prose-headings:tracking-tight prose-a:text-indigo-400 hover:prose-a:text-indigo-300 max-w-none">
-                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                        <article className="prose prose-invert prose-p:leading-relaxed prose-headings:font-bold prose-headings:tracking-tight prose-a:text-indigo-400 hover:prose-a:text-indigo-300 max-w-none break-words whitespace-pre-wrap dark:prose-invert">
+                                            <ReactMarkdown 
+                                                remarkPlugins={[remarkGfm]}
+                                                components={{
+                                                    code({ node, inline, className, children, ...props }: any) {
+                                                        const match = /language-(\w+)/.exec(className || '');
+                                                        const codeString = String(children).replace(/\n$/, '');
+                                                        
+                                                        const handleCopy = () => {
+                                                            navigator.clipboard.writeText(codeString);
+                                                            toast.success("Code copied to clipboard");
+                                                        };
+
+                                                        return !inline && match ? (
+                                                            <div className="relative group/code my-6">
+                                                                <div className="flex items-center justify-between px-4 py-2 bg-[#1a1a1f] border-x border-t border-white/10 rounded-t-xl text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                                                    <span>{match[1]}</span>
+                                                                    <button 
+                                                                        onClick={handleCopy}
+                                                                        className="p-1.5 hover:bg-white/5 rounded-md transition-colors text-slate-500 hover:text-white"
+                                                                        title="Copy code"
+                                                                    >
+                                                                        <Copy size={14} />
+                                                                    </button>
+                                                                </div>
+                                                                <SyntaxHighlighter
+                                                                    style={vscDarkPlus}
+                                                                    language={match[1]}
+                                                                    PreTag="div"
+                                                                    customStyle={{
+                                                                        margin: 0,
+                                                                        borderRadius: '0 0 0.75rem 0.75rem',
+                                                                        border: '1px solid rgba(255,255,255,0.1)',
+                                                                        borderTop: 'none',
+                                                                        background: '#0d0d0f',
+                                                                        padding: '1.5rem',
+                                                                        fontSize: '0.875rem',
+                                                                        lineHeight: '1.5',
+                                                                    }}
+                                                                    {...props}
+                                                                >
+                                                                    {codeString}
+                                                                </SyntaxHighlighter>
+                                                            </div>
+                                                        ) : (
+                                                            <code className={cn("bg-white/10 px-1.5 py-0.5 rounded-md font-mono text-sm", className)} {...props}>
+                                                                {children}
+                                                            </code>
+                                                        )
+                                                    }
+                                                }}
+                                            >
                                                 {msg.content}
                                             </ReactMarkdown>
-                                        </div>
+                                        </article>
                                     </div>
                                 </div>
                             </motion.div>
                         ))}
                     </AnimatePresence>
                     
-                    {isLoading && (
-                        <motion.div 
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="flex gap-6"
-                        >
-                            <div className="h-10 w-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-lg shadow-indigo-500/5">
-                                <Loader2 size={22} className="animate-spin" />
-                            </div>
-                            <div className="space-y-3 pt-2">
-                                <div className="flex items-center gap-3">
-                                    <div className="h-1.5 w-12 bg-indigo-500/20 rounded-full animate-pulse" />
-                                    <div className="h-1.5 w-8 bg-indigo-500/10 rounded-full animate-pulse delay-75" />
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest animate-pulse">Analyzing codebase & processing request...</span>
-                                </div>
-                            </div>
-                        </motion.div>
-                    )}
                     <div ref={messagesEndRef} className="h-32" />
                 </div>
             </div>

@@ -124,9 +124,11 @@ export const askAI = async (req: Request, res: Response) => {
 
         let fullContent = "";
         for await (const chunk of initialResult.stream) {
-            const chunkText = chunk.text();
-            fullContent += chunkText;
-            res.write(`data: ${JSON.stringify({ type: 'chunk', text: chunkText })}\n\n`);
+            const chunkText = chunk.text() || "";
+            if (chunkText) {
+                fullContent += chunkText;
+                res.write(`data: ${JSON.stringify({ type: 'chunk', text: chunkText })}\n\n`);
+            }
         }
 
         // Signal stream completion
